@@ -1,14 +1,17 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { TIMEOUTS, WAIT_STATES } from "../tests/config/constants";
 import { pageURLs } from "../tests/utils/pageRoutes";
+import { LocatorHealing } from "./utils/locator-healing";
 
 export abstract class BasePage {
 
     // ========== Constructor ==========
     readonly page: Page;
+    protected locatorHealing: LocatorHealing;
 
     constructor(page: Page) {
         this.page = page;
+        this.locatorHealing = new LocatorHealing(page);
     }
 
     // ========== Navigation ==========
@@ -126,5 +129,58 @@ export abstract class BasePage {
 
     async waitForElementHidden(locator: Locator, timeoutMs: number = TIMEOUTS.DEFAULT) {
         await locator.waitFor({ state: WAIT_STATES.HIDDEN, timeout: timeoutMs });
+    }
+
+    // ========== LOCATOR HEALING (Resilient Locators) ==========
+    /**
+     * Create a resilient locator using hybrid strategy (role-based + CSS)
+     * Most resilient to DOM changes
+     */
+    protected createResilientLocator(
+        selector?: string,
+        role?: string,
+        name?: string
+    ): Locator {
+        return this.locatorHealing.createHybridLocator(selector, role, name);
+    }
+
+    /**
+     * Create a locator based on data-testid attribute
+     * Highly resilient if test IDs are available
+     */
+    protected createTestIdLocator(testId: string): Locator {
+        return this.locatorHealing.createTestIdLocator(testId);
+    }
+
+    /**
+     * Create a locator with parent-child context
+     * Useful for specific element targeting when multiple similar elements exist
+     */
+    protected createContextualLocator(parentSelector: string, childSelector: string): Locator {
+        return this.locatorHealing.createContextualLocator(parentSelector, childSelector);
+    }
+
+    /**
+     * Create a text-based locator
+     * Useful when element structure changes but text content remains stable
+     */
+    protected createTextBasedLocator(elementType: string, textContent: string | RegExp): Locator {
+        return this.locatorHealing.createTextBasedLocator(elementType, textContent);
+    }
+
+    /**
+     * Check if a locator is healthy (element exists, visible, or enabled)
+     * Useful for conditional actions or debugging
+     */
+    protected async isLocatorHealthy(locator: Locator): Promise<boolean> {
+        return this.locatorHealing.isLocatorHealthy(locator);
+    }
+
+    /**
+     * Get diagnostic info about a locator's state
+     * Useful for debugging healing behavior or test failures
+     */
+    protected async diagnoseLocator(locator: Locator, name?: string): Promise<object> {
+        return this.locatorHealing.diagnoseLocator(locator, name);
     }
 }
