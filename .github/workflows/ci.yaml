@@ -105,8 +105,8 @@ jobs:
       #     pattern: all-blob-reports-*
       #     merge-multiple: true
 
-      - name: Merge Results (HTML + Allure)
-        run: npx playwright merge-reports --config merge.config.ts ./all-blob-reports
+      # - name: Merge Results (HTML + Allure)
+      #   run: npx playwright merge-reports --config merge.config.ts ./all-blob-reports
 
       - name: Generate Final Allure HTML
         run: npx allure-commandline@2.29.0 generate ./allure-results -o ./allure-report --clean
