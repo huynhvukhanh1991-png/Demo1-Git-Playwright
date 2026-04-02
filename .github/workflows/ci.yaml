@@ -60,7 +60,7 @@ jobs:
           NODE_OPTIONS: "--openssl-legacy-provider --tls-cipher-list=DEFAULT@SECLEVEL=1"
         run: |
           if [ "${{ env.SELECTED_BROWSER }}" = "chromium" ]; then
-            npx playwright test $COMMON_FLAGS
+            npx playwright test  --project=${{ env.SELECTED_BROWSER }} $COMMON_FLAGS
           else
             npx playwright test --grep "smoke" --project=${{ env.SELECTED_BROWSER }} $COMMON_FLAGS
           fi
