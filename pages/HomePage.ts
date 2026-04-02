@@ -26,7 +26,7 @@ export class HomePage extends CommonPage {
     async navigateToHomePageAndWait() {
         await this.navigateToPage(pageURLs.home);
         // Wait for main home page content to load
-        await this.waitForElementAttacched(this.page.locator('div.App > div:nth-child(3)'));
+        await this.waitForElementAttached(this.page.locator('div.App > div:nth-child(3)'));
     }
 
     async verifyNoNavigation() {

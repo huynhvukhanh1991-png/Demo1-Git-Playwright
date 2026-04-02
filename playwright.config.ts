@@ -36,8 +36,7 @@ export default defineConfig({
   reporter: [
     ['html'],                 // HTML report
     ['list'],                 // terminal output
-    // Uncomment for Allure reporting
-    // ['allure-playwright'],
+    ['allure-playwright', { outputFolder: 'allure-results' }],
   ],
   outputDir: 'test-results',  // test results directory
   snapshotDir: 'tests/__snapshots__',
