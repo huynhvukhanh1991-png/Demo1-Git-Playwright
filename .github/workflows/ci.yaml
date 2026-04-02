@@ -64,13 +64,13 @@ jobs:
             npx playwright test --grep "smoke" --project=${{ env.SELECTED_BROWSER }} $COMMON_FLAGS
           fi
 
-      - name: Upload Blob Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: all-blob-reports-${{ matrix.shardIndex }}
-          path: blob-report
-          retention-days: 1
+      # - name: Upload Blob Report
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: all-blob-reports-${{ matrix.shardIndex }}
+      #     path: blob-report
+      #     retention-days: 1
 
   publish-report:
     name: Merge and Publish Report
@@ -98,12 +98,12 @@ jobs:
           sudo rm -rf /usr/local/lib/android
           sudo rm -rf /opt/ghc
           
-      - name: Download all Blobs
-        uses: actions/download-artifact@v4
-        with:
-          path: all-blob-reports
-          pattern: all-blob-reports-*
-          merge-multiple: true
+      # - name: Download all Blobs
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     path: all-blob-reports
+      #     pattern: all-blob-reports-*
+      #     merge-multiple: true
 
       - name: Merge Results (HTML + Allure)
         run: npx playwright merge-reports --config merge.config.ts ./all-blob-reports
