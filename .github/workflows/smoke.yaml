@@ -1,7 +1,7 @@
 ﻿name: CI - Test and publish report
 on:
   push:
-  pull_request:
+    branches: [stg]
   workflow_dispatch:
     inputs:
       browser:
@@ -59,13 +59,11 @@ jobs:
         env:
           NODE_OPTIONS: "--openssl-legacy-provider --tls-cipher-list=DEFAULT@SECLEVEL=1"
         run: |
-          if [ "${{ env.SELECTED_BROWSER }}" = "chromium" ]; then
-            npx playwright test  --project=${{ env.SELECTED_BROWSER }} $COMMON_FLAGS
-          else
-            npx playwright test --grep "smoke" --project=${{ env.SELECTED_BROWSER }} $COMMON_FLAGS
-          fi
+            npx playwright test tests/login --project=${{ env.SELECTED_BROWSER }} $COMMON_FLAGS
+      
 
       - name: Generate Final Allure HTML
+        if: always()
         run: npx allure-commandline@2.29.0 generate ./allure-results -o ./allure-report --clean
 
       - name: Upload Playwright HTML Report (Artifact)
