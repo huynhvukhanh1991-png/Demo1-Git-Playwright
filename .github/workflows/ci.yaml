@@ -15,14 +15,16 @@ concurrency:
 
 jobs:
   test:
-    name: Run Shard ${{ matrix.shardIndex }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        shardIndex: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-        shardTotal: [12]
 
+    # name: Run Shard ${{ matrix.shardIndex }}
+    # runs-on: ubuntu-latest
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     shardIndex: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    #     shardTotal: [12]
+    name: Run All Tests
+    runs-on: ubuntu-latest
     env:
       SELECTED_BROWSER: ${{ github.event.inputs.browser || 'chromium' }}
 
@@ -57,68 +59,15 @@ jobs:
         env:
           NODE_OPTIONS: "--openssl-legacy-provider --tls-cipher-list=DEFAULT@SECLEVEL=1"
         run: |
-          COMMON_FLAGS="--shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}"
           if [ "${{ env.SELECTED_BROWSER }}" = "all" ]; then
             npx playwright test $COMMON_FLAGS
           else
             npx playwright test --grep "smoke" --project=${{ env.SELECTED_BROWSER }} $COMMON_FLAGS
           fi
 
-      # - name: Upload Blob Report
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: all-blob-reports-${{ matrix.shardIndex }}
-      #     path: blob-report
-      #     retention-days: 1
-
-  publish-report:
-    name: Merge and Publish Report
-    if: always()
-    needs: [test]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Free disk space for non-Playwright related actions
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/ghc
-          
-      # - name: Download all Blobs
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     path: all-blob-reports
-      #     pattern: all-blob-reports-*
-      #     merge-multiple: true
-
-      # - name: Merge Results (HTML + Allure)
-      #   run: npx playwright merge-reports --config merge.config.ts ./all-blob-reports
-
       - name: Generate Final Allure HTML
         run: npx allure-commandline@2.29.0 generate ./allure-results -o ./allure-report --clean
 
-      # - name: Deploy to Cloudflare Pages
-      #   uses: cloudflare/wrangler-action@v3
-      #   id: report_deploy
-      #   with:
-      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      #     command: pages deploy allure-report --project-name=demo01-playwright-framework
-          
       - name: Upload Playwright HTML Report (Artifact)
         if: always()
         uses: actions/upload-artifact@v4
@@ -133,3 +82,11 @@ jobs:
           echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
           echo "### [View Allure Report](${{ steps.report_deploy.outputs.deployment-url }})" >> $GITHUB_STEP_SUMMARY
           echo "*(The Playwright HTML report is also available in the workflow artifacts above)*" >> $GITHUB_STEP_SUMMARY
+      # - name: Upload Blob Report
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: all-blob-reports-${{ matrix.shardIndex }}
+      #     path: blob-report
+      #     retention-days: 1
+
