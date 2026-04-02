@@ -70,23 +70,23 @@ export class ChainedDropdownsHome extends BasePage {
     // ========== Wait Methods ==========
     async waitForMovieOptionsLoaded() {
         const options = this.getOptionsForDropdownFilter(this.selMovieDropdown);
-        await this.waitForElementAttacched(options.first());
+        await this.waitForElementAttached(options.first());
     }
 
     async waitForCinemaOptions() {
         const options = this.getOptionsForDropdownFilter(this.selCinemaBranchDropdown);
-        await this.waitForElementAttacched(options.first());
+        await this.waitForElementAttached(options.first());
     }
 
     async waitForShowtimeOptions() {
         const options = this.getOptionsForDropdownFilter(this.selShowtimeDropdown);
-        await this.waitForElementAttacched(options.first());
+        await this.waitForElementAttached(options.first());
     }
 
     // ========== Get Info ==========
     async getOptionInfo(option: Locator): Promise<DropdownOptionInfo> {
 
-        await this.waitForElementAttacched(option);
+        await this.waitForElementAttached(option);
 
         // Don't use waitForElementVisible - <option> elements can be hidden
         const id = await option.getAttribute('value') ?? '';
