@@ -111,13 +111,13 @@ jobs:
       - name: Generate Final Allure HTML
         run: npx allure-commandline@2.29.0 generate ./allure-results -o ./allure-report --clean
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        id: report_deploy
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy allure-report --project-name=demo01-playwright-framework
+      # - name: Deploy to Cloudflare Pages
+      #   uses: cloudflare/wrangler-action@v3
+      #   id: report_deploy
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      #     command: pages deploy allure-report --project-name=demo01-playwright-framework
           
       - name: Upload Playwright HTML Report (Artifact)
         if: always()
