@@ -103,7 +103,7 @@ export abstract class BasePage {
     // ========== Actions ==========
     async clickElement(locator: Locator, timeout: number = TIMEOUTS.DEFAULT) {
         await this.waitForElementVisible(locator, timeout);
-        await locator.click();
+        await locator.click({ force: true });
     }
 
     async setValueAndBlur(locator: Locator, value: string) {

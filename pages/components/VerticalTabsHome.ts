@@ -244,7 +244,11 @@ export class VerticalTabsHome extends VerticalTabsBase {
             const randomShowtime = pickRandomItem(showtimes);
             const showtimeId = await this.getShowtimeIdFromLink(randomShowtime);
 
-            await this.clickElement(randomShowtime);
+            // Click the showtime link and wait for page load
+            await Promise.all([
+                  this.page.waitForLoadState('networkidle'),
+                  this.clickElement(randomShowtime)
+            ]);
             return showtimeId;
       }
 

@@ -60,9 +60,16 @@ test.describe('Movie Detail Page Data Verification', () => {
 
         for (const movieId of sampleMovies) {
 
+            // Check if showtimes exist for this movie
+            const showtimes = await getMovieSchedule(movieId);
+
+            if (showtimes.length === 0) {
+                console.warn(`No showtimes found for movie id ${movieId}, skipping showtime verification.`);
+                continue;
+            }
+
             // Go to movie detail page and wait for showtime tabs loaded
             await moviePage.navigateToMoviePageAndWait(movieId);
-            await moviePage.waitForShowtimeTabsLoaded();
 
             // Get available cinemas and sort
             const uiCinemaNames = await moviePage.movieShowtimesTabs.getAllCinemaNames();

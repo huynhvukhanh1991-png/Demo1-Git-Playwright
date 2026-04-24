@@ -23,7 +23,7 @@ test.describe('Verify Movie Carousel Data Accuracy: UI vs API', () => {
         // Reformat to 2D arrays and sort to compare: movie id, name and description
         const [apiMovieArrays, uiMovieArrays] = await Promise.all([
             apiMovies.map(api => [api.maPhim.toString(), api.tenPhim, api.moTa]).sort(),
-            uiMovies.map(ui => [ui.maPhim, ui.tenPhim, ui.moTa]).sort(),
+            uiMovies.map(ui => [ui.maPhim.toString(), ui.tenPhim, ui.moTa]).sort(),
         ]);
     
         expect(uiMovieArrays).toEqual(apiMovieArrays);

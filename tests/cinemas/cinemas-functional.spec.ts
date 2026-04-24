@@ -123,7 +123,6 @@ test.describe('Cinema Screenings Table Functional Test', () => {
                     const sampleBranches = pickSampleItems(currentBranches);
 
                     for (const branch of sampleBranches) {
-                        ;
                         // Switch branch & select random screening
                         await homePage.cinemaShowtimesTabs.selectBranchAndWaitShowtimesUpdated(branch);
 
