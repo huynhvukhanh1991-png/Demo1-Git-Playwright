@@ -199,17 +199,25 @@ export class ShowtimePage extends CommonPage {
     async isSeatSelected(seatNumber: string): Promise<boolean> {
 
         const btnSeat = this.getSeatBtnBySeatNumber(seatNumber);
-        const btnStyle = await this.getElementAttribute(btnSeat, "style");
-
+        
         if (await btnSeat.count() !== 1) {
             throw new Error(`Cannot locate this seat button. Locator: ${btnSeat}`);
         }
 
-        if (!btnStyle) {
-            return false;
+        // Check if the seat appears in the preview selected seats - most reliable way
+        try {
+            const previewSeats = await this.getPreviewSelectedSeats();
+            return previewSeats.includes(seatNumber);
+        } catch (e) {
+            // Fallback to checking style attribute if preview fails
+            const btnStyle = await this.getElementAttribute(btnSeat, "style");
+            if (btnStyle && btnStyle.length > 0 && btnStyle !== 'display: none;') {
+                return true;
+            }
+            
+            const ariaPressed = await this.getElementAttribute(btnSeat, "aria-pressed");
+            return ariaPressed === "true";
         }
-
-        return true;
     }
 
     // Order preview 
@@ -312,7 +320,9 @@ export class ShowtimePage extends CommonPage {
                 throw new Error(`Seat is already pre-selected. Cannot select seat: ${number}`);
             }
 
+            await btnSeat.scrollIntoViewIfNeeded();
             await this.clickElement(btnSeat);
+            await this.page.waitForTimeout(300); // Allow UI to update after click
         }
 
     }
@@ -329,7 +339,9 @@ export class ShowtimePage extends CommonPage {
                 throw new Error(`Seat is not in selected state. Cannot unselect seat: ${number}`);
             }
 
+            await btnSeat.scrollIntoViewIfNeeded();
             await this.clickElement(btnSeat);
+            await this.page.waitForTimeout(300); // Allow UI to update after click
         }
 
     }

@@ -266,7 +266,7 @@ export class SlideCarouselHome extends BasePage {
         await expect(button).toBeEnabled({ timeout: 5000 });
 
         await this.clickElement(button);
-        await this.waitForElementAttacched(this.videoTrailer);
+        await this.waitForElementAttached(this.videoTrailer, 30000);
     }
 
     async closeVideo() {

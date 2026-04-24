@@ -63,7 +63,7 @@ export const registerFieldValidationRules: RegisterFieldValidationRules = {
         expectedError: "Đây là trường bắt buộc !"
       },
       {
-        case: "invalid_OnlyWhitespaces",
+        case: "invalid_onlyWhitespaces",
         input: "        ",
         expectedError: "Đây là trường bắt buộc !"
       },
@@ -182,9 +182,12 @@ export const accountFieldValidationRules: AccountFieldValidationRules = {
 export const loginFieldValidationRules: LoginFieldValidationRules = {
   taiKhoan: {
     // taiKhoan should only be checked for blank input (besides form submission validation)
-    tests: registerFieldValidationRules.taiKhoan.tests.filter(test => test.case === "blank" || test.case === "invalid_onlyWhitespaces")
+    tests: registerFieldValidationRules.taiKhoan.tests.filter(test => test.case === "blank")
   },
-  matKhau: registerFieldValidationRules.matKhau
+  matKhau: {
+    // matKhau should only be checked for blank input (besides form submission validation)
+    tests: registerFieldValidationRules.matKhau.tests.filter(test => test.case === "blank")
+  }
 };
 
 

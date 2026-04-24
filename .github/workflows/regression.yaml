@@ -1,7 +1,6 @@
 ﻿name: CI - Test and publish report
 on:
   pull_request:
-    branches: [main]
   workflow_dispatch:
     inputs:
       browser:
